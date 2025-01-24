@@ -791,11 +791,54 @@ export default function Register() {
     setActiveStep((prev) => prev - 1);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validateStep()) {
-      console.log("Submitted Data:", formData);
-      setShowSuccess(true);
+
+    // Validate form data
+    if (!validateStep()) {
+      console.error("Validation failed");
+      return;
+    }
+
+    try {
+      const response = await fetch("https://bharat-techx.vercel.app/api/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Something went wrong");
+      }
+
+      const data = await response.json();
+      console.log("Registration successful:", data);
+
+      setShowSuccess(true); // Show success message
+      setFormData({
+        teamName: "",
+        teamLeader: {
+          name: "",
+          email: "",
+          phone: "",
+          github: "",
+          college: "",
+        },
+        teamMembers: Array(1).fill({
+          name: "",
+          email: "",
+          phone: "",
+          github: "",
+          college: "",
+        }),
+      });
+      setActiveStep(0); // Reset form to the first step
+    } catch (error) {
+      console.error("Error submitting the form:", error.message);
+      alert("Failed to submit the form: " + error.message);
     }
   };
 
