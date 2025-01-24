@@ -655,12 +655,8 @@ export default function Register() {
   const [typedText, setTypedText] = useState("");
   const [formErrors, setFormErrors] = useState({});
   const [activeStep, setActiveStep] = useState(0);
-  const [teamMembers, setTeamMembers] = useState(2);
-
-  const [dataSheet, setData] = useState([]);
-  const [isValidEmail, setIsValidEmail] = useState(true);
-  const [isDuplicate, setDuplicate] = useState(false);
-  const [currentStepIndex, setCurrentStepIndex] = useState(0);
+  const [teamMembers, setTeamMembers] = useState(1);
+  const [loading, setLoading] = useState(false);
 
   const welcomeText = "Hey there! Welcome to Bharat tech xperience 2.0";
 
@@ -793,24 +789,30 @@ export default function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     // Validate form data
     if (!validateStep()) {
+      setLoading(false);
       console.error("Validation failed");
       return;
     }
 
     try {
-      const response = await fetch("https://bharat-techx.vercel.app/api/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      const response = await fetch(
+        "https://bharat-techx.vercel.app/api/register",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
 
       if (!response.ok) {
         const errorData = await response.json();
+        setLoading(false);
         throw new Error(errorData.message || "Something went wrong");
       }
 
@@ -818,6 +820,7 @@ export default function Register() {
       console.log("Registration successful:", data);
 
       setShowSuccess(true); // Show success message
+      setLoading(false);
       setFormData({
         teamName: "",
         teamLeader: {
@@ -837,6 +840,7 @@ export default function Register() {
       });
       setActiveStep(0); // Reset form to the first step
     } catch (error) {
+      setLoading(false);
       console.error("Error submitting the form:", error.message);
       alert("Failed to submit the form: " + error.message);
     }
@@ -1016,11 +1020,18 @@ export default function Register() {
                     >
                       Next
                     </button>
+                  ) : loading ? (
+                    <button
+                      type="button"
+                      className="bg-blue-700 text-white py-2 px-8 rounded"
+                      disabled
+                    >
+                      Submitting...
+                    </button>
                   ) : (
                     <button
                       type="submit"
                       className="bg-green-700 text-white py-2 px-8 rounded"
-                      disabled={showSuccess}
                     >
                       Submit
                     </button>
