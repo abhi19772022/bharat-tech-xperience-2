@@ -645,20 +645,24 @@
 //   )
 // }
 
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { Link2 } from "lucide-react";
-import registrationBg from "../../Assets/registration.png";
+
+
+
+
+import React, { useState, useEffect } from "react"
+import { Link } from "react-router-dom"
+import { Link2 } from "lucide-react"
+import registrationBg from "../../Assets/registration.png"
 
 export default function Register() {
-  const [showSuccess, setShowSuccess] = useState(false);
-  const [typedText, setTypedText] = useState("");
-  const [formErrors, setFormErrors] = useState({});
-  const [activeStep, setActiveStep] = useState(0);
-  const [teamMembers, setTeamMembers] = useState(1);
-  const [loading, setLoading] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false)
+  const [typedText, setTypedText] = useState("")
+  const [formErrors, setFormErrors] = useState({})
+  const [activeStep, setActiveStep] = useState(0)
+  const [teamMembers, setTeamMembers] = useState(1)
+  const [loading, setLoading] = useState(false)
 
-  const welcomeText = "Hey there! Welcome to Bharat tech xperience 2.0";
+  const welcomeText = "Hey there! Welcome to Bharat tech xperience 2.0"
 
   const [formData, setFormData] = useState({
     teamName: "",
@@ -669,158 +673,141 @@ export default function Register() {
       github: "",
       college: "",
     },
-    teamMembers: Array(1).fill({
-      name: "",
-      email: "",
-      phone: "",
-      github: "",
-      college: "",
-    }),
-  });
+    teamMembers: Array(1)
+      .fill()
+      .map(() => ({
+        name: "",
+        email: "",
+        phone: "",
+        github: "",
+        college: "",
+      })),
+  })
 
   useEffect(() => {
-    let currentIndex = 0;
+    let currentIndex = 0
     const interval = setInterval(() => {
       if (currentIndex <= welcomeText.length) {
-        setTypedText(welcomeText.slice(0, currentIndex));
-        currentIndex++;
+        setTypedText(welcomeText.slice(0, currentIndex))
+        currentIndex++
       } else {
-        clearInterval(interval);
+        clearInterval(interval)
       }
-    }, 50);
+    }, 50)
 
-    return () => clearInterval(interval);
-  }, []);
+    return () => clearInterval(interval)
+  }, [])
 
   const handleInputChange = (e, field, index = null) => {
-    const value = e.target.value;
+    const value = e.target.value
     if (index !== null) {
-      const updatedMembers = [...formData.teamMembers];
-      updatedMembers[index][field] = value;
-      setFormData({ ...formData, teamMembers: updatedMembers });
+      const updatedMembers = [...formData.teamMembers]
+      updatedMembers[index] = { ...updatedMembers[index], [field]: value }
+      setFormData({ ...formData, teamMembers: updatedMembers })
     } else if (field.startsWith("teamLeader.")) {
-      const leaderField = field.split(".")[1];
+      const leaderField = field.split(".")[1]
       setFormData({
         ...formData,
         teamLeader: { ...formData.teamLeader, [leaderField]: value },
-      });
+      })
     } else {
-      setFormData({ ...formData, [field]: value });
+      setFormData({ ...formData, [field]: value })
     }
-  };
+  }
 
   const handleTeamMembersChange = (e) => {
-    const num = parseInt(e.target.value);
-    setTeamMembers(num);
-    const updatedMembers = Array(num).fill({
-      name: "",
-      email: "",
-      phone: "",
-      github: "",
-      college: "",
-    });
-    setFormData({ ...formData, teamMembers: updatedMembers });
-  };
+    const num = Number.parseInt(e.target.value)
+    setTeamMembers(num)
+    const updatedMembers = Array(num)
+      .fill()
+      .map(() => ({
+        name: "",
+        email: "",
+        phone: "",
+        github: "",
+        college: "",
+      }))
+    setFormData({ ...formData, teamMembers: updatedMembers })
+  }
 
   const validateStep = () => {
-    const errors = {};
+    const errors = {}
 
     if (activeStep === 0 && !formData.teamName) {
-      errors.teamName = "Team Name is required";
+      errors.teamName = "Team Name is required"
     }
 
     if (activeStep === 1) {
       Object.entries(formData.teamLeader).forEach(([key, value]) => {
-        if (!value) errors[`teamLeader.${key}`] = `${key} is required`;
-      });
-    }
-
-    if (activeStep === 2) {
-      formData.teamMembers.forEach((member, index) => {
-        Object.entries(member).forEach(([key, value]) => {
-          if (!value)
-            errors[`teamMembers.${index}.${key}`] = `${key} is required`;
-        });
-      });
-    }
-
-    if (activeStep === 1) {
-      Object.entries(formData.teamLeader).forEach(([key, value]) => {
-        if (!value) errors[`teamLeader.${key}`] = `${key} is required`;
+        if (!value) errors[`teamLeader.${key}`] = `${key} is required`
         if (key === "email" && value && !/^\S+@\S+\.\S+$/.test(value)) {
-          errors[`teamLeader.${key}`] = "Enter a valid email address";
+          errors[`teamLeader.${key}`] = "Enter a valid email address"
         }
         if (key === "phone" && value && !/^\d{10}$/.test(value)) {
-          errors[`teamLeader.${key}`] = "Enter a valid 10-digit phone number";
+          errors[`teamLeader.${key}`] = "Enter a valid 10-digit phone number"
         }
-      });
+      })
     }
 
     if (activeStep === 2) {
       formData.teamMembers.forEach((member, index) => {
         Object.entries(member).forEach(([key, value]) => {
-          if (!value)
-            errors[`teamMembers.${index}.${key}`] = `${key} is required`;
+          if (!value) errors[`teamMembers.${index}.${key}`] = `${key} is required`
           if (key === "email" && value && !/^\S+@\S+\.\S+$/.test(value)) {
-            errors[`teamMembers.${index}.${key}`] =
-              "Enter a valid email address";
+            errors[`teamMembers.${index}.${key}`] = "Enter a valid email address"
           }
           if (key === "phone" && value && !/^\d{10}$/.test(value)) {
-            errors[`teamMembers.${index}.${key}`] =
-              "Enter a valid 10-digit phone number";
+            errors[`teamMembers.${index}.${key}`] = "Enter a valid 10-digit phone number"
           }
-        });
-      });
+        })
+      })
     }
 
-    setFormErrors(errors);
-    return Object.keys(errors).length === 0;
-  };
+    setFormErrors(errors)
+    return Object.keys(errors).length === 0
+  }
 
   const handleNext = () => {
     if (validateStep()) {
-      setActiveStep((prev) => prev + 1);
+      setActiveStep((prev) => prev + 1)
     }
-  };
+  }
 
   const handleBack = () => {
-    setActiveStep((prev) => prev - 1);
-  };
+    setActiveStep((prev) => prev - 1)
+  }
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+    e.preventDefault()
+    setLoading(true)
 
     // Validate form data
     if (!validateStep()) {
-      setLoading(false);
-      console.error("Validation failed");
-      return;
+      setLoading(false)
+      console.error("Validation failed")
+      return
     }
 
     try {
-      const response = await fetch(
-        "https://bharat-techx.vercel.app/api/register",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData),
-        }
-      );
+      const response = await fetch("https://bharat-techx.vercel.app/api/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      })
 
       if (!response.ok) {
-        const errorData = await response.json();
-        setLoading(false);
-        throw new Error(errorData.message || "Something went wrong");
+        const errorData = await response.json()
+        setLoading(false)
+        throw new Error(errorData.message || "Something went wrong")
       }
 
-      const data = await response.json();
-      console.log("Registration successful:", data);
+      const data = await response.json()
+      console.log("Registration successful:", data)
 
-      setShowSuccess(true); // Show success message
-      setLoading(false);
+      setShowSuccess(true) // Show success message
+      setLoading(false)
       setFormData({
         teamName: "",
         teamLeader: {
@@ -830,40 +817,39 @@ export default function Register() {
           github: "",
           college: "",
         },
-        teamMembers: Array(1).fill({
-          name: "",
-          email: "",
-          phone: "",
-          github: "",
-          college: "",
-        }),
-      });
-      setActiveStep(0); // Reset form to the first step
+        teamMembers: Array(1)
+          .fill()
+          .map(() => ({
+            name: "",
+            email: "",
+            phone: "",
+            github: "",
+            college: "",
+          })),
+      })
+      setActiveStep(0) // Reset form to the first step
     } catch (error) {
-      setLoading(false);
-      console.error("Error submitting the form:", error.message);
-      alert("Failed to submit the form: " + error.message);
+      setLoading(false)
+      console.error("Error submitting the form:", error.message)
+      alert("Failed to submit the form: " + error.message)
     }
-  };
+  }
 
   const steps = [
     {
       label: "Team Details",
       content: (
         <div>
-          <label className="block text-zinc-400 mb-2 font-medium">
-            Team Name
-          </label>
+          <label className="block text-zinc-400 mb-2 font-medium">Team Name</label>
           <input
             type="text"
             value={formData.teamName}
             onChange={(e) => handleInputChange(e, "teamName")}
+            onKeyDown={(e) => e.key === "Enter" && e.preventDefault()}
             className="w-full bg-transparent border border-zinc-700 text-zinc-100 rounded py-2 px-4"
             placeholder="Enter Team Name"
           />
-          {formErrors.teamName && (
-            <p className="text-red-500 text-sm">{formErrors.teamName}</p>
-          )}
+          {formErrors.teamName && <p className="text-red-500 text-sm">{formErrors.teamName}</p>}
         </div>
       ),
     },
@@ -873,20 +859,17 @@ export default function Register() {
         <div className="space-y-4">
           {Object.keys(formData.teamLeader).map((field) => (
             <div key={field}>
-              <label className="block mb-2 text-zinc-400 font-medium capitalize">
-                Team leader {field}
-              </label>
+              <label className="block mb-2 text-zinc-400 font-medium capitalize">Team leader {field}</label>
               <input
                 type="text"
                 value={formData.teamLeader[field]}
                 onChange={(e) => handleInputChange(e, `teamLeader.${field}`)}
+                onKeyDown={(e) => e.key === "Enter" && e.preventDefault()}
                 className="w-full bg-transparent border border-zinc-700 text-zinc-100 rounded py-2 px-4"
                 placeholder={`Enter ${field}`}
               />
               {formErrors[`teamLeader.${field}`] && (
-                <p className="text-red-500 text-sm">
-                  {formErrors[`teamLeader.${field}`]}
-                </p>
+                <p className="text-red-500 text-sm">{formErrors[`teamLeader.${field}`]}</p>
               )}
             </div>
           ))}
@@ -897,9 +880,7 @@ export default function Register() {
       label: "Team Member Details",
       content: (
         <div>
-          <label className="block mb-2 text-zinc-400 font-medium">
-            Number of Team Members
-          </label>
+          <label className="block mb-2 text-zinc-400 font-medium">Number of Team Members</label>
           <select
             value={teamMembers}
             onChange={handleTeamMembersChange}
@@ -914,25 +895,20 @@ export default function Register() {
 
           {formData.teamMembers.map((member, index) => (
             <div key={index} className="space-y-4 mt-4">
-              <h4 className="text-sm  text-green-500">
-                Team Member {index + 1}
-              </h4>
+              <h4 className="text-sm  text-green-500">Team Member {index + 1}</h4>
               {Object.keys(member).map((field) => (
                 <div key={field}>
-                  <label className="block mb-2 text-zinc-400 font-medium capitalize">
-                    {field}
-                  </label>
+                  <label className="block mb-2 text-zinc-400 font-medium capitalize">{field}</label>
                   <input
                     type="text"
                     value={member[field]}
                     onChange={(e) => handleInputChange(e, field, index)}
+                    onKeyDown={(e) => e.key === "Enter" && e.preventDefault()}
                     className="w-full bg-transparent border border-zinc-700 text-zinc-100 rounded py-2 px-4"
                     placeholder={`Enter ${field}`}
                   />
                   {formErrors[`teamMembers.${index}.${field}`] && (
-                    <p className="text-red-500 text-sm">
-                      {formErrors[`teamMembers.${index}.${field}`]}
-                    </p>
+                    <p className="text-red-500 text-sm">{formErrors[`teamMembers.${index}.${field}`]}</p>
                   )}
                 </div>
               ))}
@@ -941,7 +917,7 @@ export default function Register() {
         </div>
       ),
     },
-  ];
+  ]
 
   return (
     <div className="min-h-[100vh] p-10 text-white">
@@ -964,7 +940,7 @@ export default function Register() {
                   <img
                     alt="gallery"
                     className="w-full object-contain h-full object-center block absolute inset-0"
-                    src={registrationBg}
+                    src={registrationBg || "/placeholder.svg"}
                   />
                   <div className="text-center md:pl-20 relative z-10 w-full">
                     <h2 className="text-2xl md:text-6xl text-white font-medium title-font mb-2 text-animation">
@@ -984,18 +960,14 @@ export default function Register() {
                   <div className="h-3 w-3 rounded-full bg-yellow-500" />
                   <div className="h-3 w-3 rounded-full bg-green-500" />
                 </div>
-                <div className="flex-1 text-center text-sm text-zinc-400 font-mono">
-                  bharat-tech-xperience 2.0
-                </div>
+                <div className="flex-1 text-center text-sm text-zinc-400 font-mono">bharat-tech-xperience 2.0</div>
               </div>
 
-              <form onSubmit={handleSubmit} className="p-6 space-y-6">
+              <form onSubmit={(e) => e.preventDefault()} className="p-6 space-y-6">
                 <div className="space-y-4">
                   <p className="text-zinc-100 font-mono">
                     {typedText}
-                    {typedText === welcomeText && (
-                      <Link2 className="inline h-4 w-4 ml-2" />
-                    )}
+                    {typedText === welcomeText && <Link2 className="inline h-4 w-4 ml-2" />}
                   </p>
                   <div className="border-t border-zinc-700 my-8" />
                 </div>
@@ -1004,35 +976,20 @@ export default function Register() {
 
                 <div className="flex justify-between">
                   {activeStep > 0 && (
-                    <button
-                      type="button"
-                      className="bg-gray-700 text-white py-2 px-8 rounded"
-                      onClick={handleBack}
-                    >
+                    <button type="button" className="bg-gray-700 text-white py-2 px-8 rounded" onClick={handleBack}>
                       Back
                     </button>
                   )}
                   {activeStep < steps.length - 1 ? (
-                    <button
-                      type="button"
-                      className="bg-blue-700 text-white py-2 px-8 rounded"
-                      onClick={handleNext}
-                    >
+                    <button type="button" className="bg-blue-700 text-white py-2 px-8 rounded" onClick={handleNext}>
                       Next
                     </button>
                   ) : loading ? (
-                    <button
-                      type="button"
-                      className="bg-blue-700 text-white py-2 px-8 rounded"
-                      disabled
-                    >
+                    <button type="button" className="bg-blue-700 text-white py-2 px-8 rounded" disabled>
                       Submitting...
                     </button>
                   ) : (
-                    <button
-                      type="submit"
-                      className="bg-green-700 text-white py-2 px-8 rounded"
-                    >
+                    <button type="button" className="bg-green-700 text-white py-2 px-8 rounded" onClick={handleSubmit}>
                       Submit
                     </button>
                   )}
@@ -1049,5 +1006,6 @@ export default function Register() {
         </div>
       </section>
     </div>
-  );
+  )
 }
+
