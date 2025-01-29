@@ -1,0 +1,85 @@
+.sticky_header{
+  width: 100%;
+  height: 80px;
+  line-height: 80px;
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 99999999999;
+  box-shadow: 3px 3px -8px 3px #ddd;
+  background:rgba(60, 58, 58, 0.568);
+}
+
+.text-animation {
+  animation: animate2 5s linear infinite;
+  outline: none;
+ color:#fff;
+}
+@keyframes animate2 {
+  0%, 18% , 20% , 50.1% , 60% , 65.1% , 80% , 90.1% , 92%{
+    color: #969797;
+    text-shadow: none;
+  }
+  18.1%,20.1%, 30% , 50% , 60.1% ,65%, 65.1%, 100%{
+    color: #fff;
+    /* box-shadow: 0 0 10px #03bcf4; */
+    text-shadow: 0 0 10px #fff,
+    0 0 20px #fff,
+    0 0 40px #fff,
+    0 0 60px #fff,
+    0 0 80px #fff,
+    0 0 160px #fff,
+  }
+  
+}
+@media only screen and (max-width:768px){
+
+  .navigation{
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    background: #00000084;
+    display: none;
+  }
+  .menu{
+    
+    width: 15rem;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    right: 0;
+    background:#434040b1;
+    z-index: 200;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    line-height: 30px;
+  }
+  .show_menu{
+    display: block;
+  }
+  .parveen-class{
+    margin-bottom: 0 !important;
+  }
+}
+.scrollbar{
+  overflow-y: hidden;
+  overflow-x: hidden;
+}
+.disableButton{
+  opacity: 0.7; /* Lower opacity for disabled button */
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.parveen-class{
+  margin-bottom: -300px;
+}
+
+.adminActions {
+  position: fixed;
+  bottom: 35px; right: 35px;
+}
