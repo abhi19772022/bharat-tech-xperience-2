@@ -9,7 +9,7 @@ const TeamCheckIn = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [teams, setTeams] = useState([]);
 
-  useEffect(() => {
+  useEffect(() => { 
     const fetchData = async () => {
       try {
         const res = await axios.get("http://localhost:5000/api/registrations");
@@ -17,7 +17,7 @@ const TeamCheckIn = () => {
         
         setTeams(res.data);
       } catch (err) {
-        console.error("Error fetching data:", err);
+        console.error("Error fetching data:", err);                                  
       }
     };
 
